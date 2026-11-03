@@ -3,7 +3,9 @@
 import { CARDS, SINGLE_PLAY } from './cards.js';
 
 export const NOPE_MS = 7000; // length of the Nope window, counted locally by each client
-export const MAX_PLAYERS = 5;
+export const MAX_PLAYERS = 10;
+// 1 deck (56 cards) for 2-5 players, 2 combined decks for 6-10 (the rulebook allows combining decks).
+export const decksFor = (n) => (n <= 5 ? 1 : 2);
 
 const clone = (o) => JSON.parse(JSON.stringify(o));
 
@@ -37,10 +39,11 @@ function nextAlive(s, from) {
 
 function dealNewGame(s) {
   const n = s.players.length;
+  const decks = decksFor(n);
   let deck = [];
   for (const [type, c] of Object.entries(CARDS)) {
     if (type === 'exploding' || type === 'defuse') continue;
-    deck.push(...Array(c.count).fill(type));
+    deck.push(...Array(c.count * decks).fill(type));
   }
   deck = shuffle(deck);
   s.players.forEach((p) => {
@@ -48,8 +51,8 @@ function dealNewGame(s) {
     p.hand = ['defuse'];
     for (let i = 0; i < 7; i++) p.hand.push(deck.pop());
   });
-  // 6 defuses total: 1 each, then shuffle back 2 extras (5 players -> only 1 extra exists)
-  deck.push(...Array(Math.min(2, 6 - n)).fill('defuse'));
+  // 6 Defuses per deck: 1 each, then shuffle back 2 extras per deck (if that many are left over)
+  deck.push(...Array(Math.min(2 * decks, 6 * decks - n)).fill('defuse'));
   deck = shuffle(deck);
   if (s.fast) deck = deck.slice(Math.floor(deck.length / 3)); // "Faster game variant"
   deck.push(...Array(n - 1).fill('exploding'));
@@ -165,7 +168,7 @@ export function reduce(state, a) {
     case 'join': {
       if (s.phase !== 'lobby') throw new Error('The game has already started.');
       if (byId(s, a.player)) return null;
-      if (s.players.length >= MAX_PLAYERS) throw new Error('This game is full (max 5).');
+      if (s.players.length >= MAX_PLAYERS) throw new Error(`This game is full (max ${MAX_PLAYERS}).`);
       s.players.push({ id: a.player, name: a.name, hand: [], alive: true });
       say(s, `${a.name} joined.`);
       return s;

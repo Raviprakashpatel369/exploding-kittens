@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGame } from './useGame.js';
 import { CARDS, CARD_ORDER, SINGLE_PLAY } from './cards.js';
-import { NOPE_MS, blockerId } from './engine.js';
+import { NOPE_MS, MAX_PLAYERS, blockerId, decksFor } from './engine.js';
 
 const GAME_WAIT = 60000;   // offline player we're waiting on is removed after 60s
 const SHORT_WAIT = 15000;  // ...or 15s if they were already gone for a while
@@ -159,6 +159,11 @@ export default function Game({ code, me, onLeave }) {
           <h1>Waiting for players</h1>
           <p className="hint">Send this link to your friends, or give them the code <strong>{code}</strong>.</p>
           <button className="btn" onClick={copy}>{copied ? 'Link copied' : 'Copy invite link'}</button>
+          <p className="hint">
+            {s.players.length}/{MAX_PLAYERS} players · {decksFor(s.players.length) === 1
+              ? 'one deck (6 or more players combine two decks)'
+              : 'two decks combined'}
+          </p>
           <ul className="roster">
             {s.players.map((p) => (
               <li key={p.id}>

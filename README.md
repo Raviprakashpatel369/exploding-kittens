@@ -1,6 +1,6 @@
 # Exploding Kittens Online
 
-A small realtime web version of the Exploding Kittens base game (2–5 players, rules from the official rulebook).
+A small realtime web version of the Exploding Kittens base game (2–10 players, rules from the official rulebook).
 React + Vite front end, Supabase (Postgres + Realtime) for shared game state, Vercel for hosting.
 
 ## 1. Supabase
@@ -34,6 +34,11 @@ countdown and that player is removed after 60s (15s if they were already gone fo
 Removed players' cards are discarded and play continues; if only one player remains they win. In the lobby, offline players
 are dropped after 30s. The **Leave** button removes you immediately, and the host can remove any offline player with **Remove**.
 Tune `GAME_WAIT`, `SHORT_WAIT`, `LOBBY_WAIT` at the top of `src/Game.jsx`.
+
+## Bigger games
+2–5 players use one deck. 6–10 players combine two decks (the rulebook allows combining decks): every card count doubles,
+each player still gets 1 Defuse + 7 cards, 2 spare Defuses per deck go back into the pile, and there are always
+(players − 1) Exploding Kittens. Change `MAX_PLAYERS` / `decksFor` in `src/engine.js` to tune this.
 
 ## Rules implemented
 Exploding Kittens, Defuse (secret reinsert), Attack (with stacking), Skip, Favor, Shuffle, See the Future,

@@ -68,7 +68,7 @@ export default function App() {
     <main className="home">
       <div className="logo" aria-hidden>💣</div>
       <h1>Exploding Kittens</h1>
-      <p className="tagline">Play with friends anywhere. 2–5 players, no one has to sit at the same table.</p>
+      <p className="tagline">Play with friends anywhere. 2–10 players (6+ combine two decks), no one has to sit at the same table.</p>
 
       <section className="card-panel">
         <label htmlFor="name">Your name</label>

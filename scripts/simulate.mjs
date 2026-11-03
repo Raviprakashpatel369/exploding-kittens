@@ -2,11 +2,18 @@ import { newLobby, reduce } from '../src/engine.js';
 import { CARDS } from '../src/cards.js';
 let games=0, maxSteps=0;
 for (let g=0; g<500; g++){
-  const n = 2+(g%4);
+  const n = 2+(g%9);
   let s = newLobby('p0','P0');
   for(let i=1;i<n;i++) s=reduce(s,{type:'join',player:'p'+i,name:'P'+i});
   s.fast = g%2===0;
   s=reduce(s,{type:'start',player:'p0'});
+  { // deck-size sanity: kittens = n-1, defuses = n (in hands) + spares, correct total
+    const all=[...s.draw,...s.players.flatMap(p=>p.hand)];
+    const d=n<=5?1:2;
+    if(all.filter(c=>c==='exploding').length!==n-1) throw new Error('kitten count n='+n);
+    const dz=all.filter(c=>c==='defuse').length; if(!s.fast && dz!==n+Math.min(2*d,6*d-n)) throw new Error('defuse count n='+n+' got '+dz);
+    if(!s.fast && all.length!==56*d-(4*d-(n-1))-(6*d-n-Math.min(2*d,6*d-n))) throw new Error('total cards n='+n+' got '+all.length);
+  }
   let steps=0;
   while(s.phase!=='ended' && steps++<5000){
     if(Math.random()<0.02){ const v=s.players.filter(p=>p.alive&&p.id!=='p0'); if(v.length){ const x=v[Math.floor(Math.random()*v.length)]; let r2=null; try{ r2=reduce(s,{type:Math.random()<0.5?'leave':'kick',player:Math.random()<0.5?x.id:'p0',target:x.id,now:Date.now()}); }catch(e){ if(!/Only the host/.test(e.message)) throw e; } if(r2) s=r2; if(s.phase==='ended') break; } }
