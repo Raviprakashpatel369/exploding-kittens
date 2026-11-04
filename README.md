@@ -1,6 +1,6 @@
-# Card Night: Exploding Kittens and Uno
+# Card Night: Exploding Kittens, Uno and Cat in the Box
 
-Small realtime web versions of **Exploding Kittens** (rules from the official rulebook) and **Uno** (official Mattel rules), 2–10 players each.
+Small realtime web versions of **Exploding Kittens** (2–10 players), **Uno** (2–10) and **Cat in the Box** (2–5), using the published rulebooks.
 React + Vite front end, Supabase (Postgres + Realtime) for shared game state, Vercel for hosting.
 
 ## 1. Supabase
@@ -48,6 +48,18 @@ play your second-to-last card (tick "Say UNO with this play"); if you forget, an
 (you can still press **UNO!** first if you're quick). Rounds are scored (number cards face value, Skip/Reverse/Draw Two 20,
 Wild/Draw Four 50); first to 500 wins the match and the host can start the next round or a new match.
 Players who leave or disconnect have their cards shuffled back into the draw pile.
+
+## Cat in the Box
+Quantum trick-taking (rules from the Pegasus/Bezier rulebook). Cards are numbers only; you declare ("observe") a colour when you
+play a card, and each colour+number can be observed once per round. Setup per player count: 5p = cards 1–9 (9 each), 4p = 1–8,
+3p = 1–6, 2p = 1–5 (10 each; 3 revealed middle cards block board spaces). Each round: set one card aside, predict tricks
+(1/2/3 for 4–5 players, 1/3/4 for 3 players, none for 2), play tricks until everyone has one card left. The leader can't lead red
+(trump) until red has been observed; playing a colour other than the led colour removes the led colour from you for the round;
+red beats everything, else highest of the led colour wins. No legal card = **paradox**: round ends, −1 per trick won, no bonus.
+Scoring: 1 per trick, plus a bonus equal to your largest orthogonally connected group of tokens on the research board if your
+prediction was exact (2 players: if you won 4 or fewer tricks). A game is as many rounds as players; the start player rotates.
+Row order on the board (Red, Blue, Yellow, Green) only affects which tokens count as adjacent; change `ROWS` in `src/cat/engine.js`
+if your physical board differs. A player leaving mid-round voids that round and it restarts with the remaining players.
 
 ## Adding another game
 Write an engine (`newLobby`, `reduce`, `blockerId`) and a Board component, register them in `src/games.js` and the `BOARDS` map in

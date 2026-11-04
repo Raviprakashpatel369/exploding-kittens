@@ -3,6 +3,7 @@
 // then register both here and in Room.jsx's BOARDS map.
 import * as ek from './engine.js';
 import * as uno from './uno/engine.js';
+import * as cat from './cat/engine.js';
 
 export const GAMES = {
   ek: {
@@ -18,6 +19,12 @@ export const GAMES = {
     id: 'uno', title: 'Uno', emoji: '🎴', max: uno.MAX_PLAYERS,
     newLobby: uno.newLobby, reduce: uno.reduce, blockerId: uno.blockerId,
     lobbyNote: (n) => `${n}/${uno.MAX_PLAYERS} players · first to ${uno.TARGET} points wins the match`,
+    options: [],
+  },
+  cat: {
+    id: 'cat', title: 'Cat in the Box', emoji: '📦', max: cat.MAX_PLAYERS,
+    newLobby: cat.newLobby, reduce: cat.reduce, blockerId: cat.blockerId,
+    lobbyNote: (n) => `${n}/${cat.MAX_PLAYERS} players (2–5) · ${Math.max(n, 2)} rounds, everyone starts once`,
     options: [],
   },
 };
