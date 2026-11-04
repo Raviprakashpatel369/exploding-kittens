@@ -95,3 +95,26 @@ select { width: auto; }
 .roster li { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .roster .btn.small { margin: 0; }
 .offline-banner { margin: 0; text-align: center; background: rgba(255, 210, 63, .12); border: 1px solid var(--gold); color: var(--gold); border-radius: 12px; padding: 8px 12px; font-weight: 700; }
+
+/* ---------- Uno ---------- */
+.uno-card { --w: clamp(58px, 14vw, 84px); width: var(--w); height: calc(var(--w) * 1.5); flex: none; border-radius: 12px;
+  border: 3px solid #fff; background: var(--c, #17171c); color: var(--fg, #fff); display: grid; place-items: center; cursor: default;
+  box-shadow: 0 4px 0 rgba(0,0,0,.35); opacity: .55; transition: transform .12s, opacity .12s; position: relative; }
+.uno-card .v { font-family: var(--display); font-size: calc(var(--w) * .46); line-height: 1; text-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.uno-card.playable { opacity: 1; cursor: pointer; }
+.uno-card.playable:hover { transform: translateY(-10px); }
+.uno-card:disabled { cursor: default; }
+.uno-card.wild { background: conic-gradient(#e5383b 0 25%, #3b82f6 0 50%, #3fb27f 0 75%, #ffd23f 0); }
+.uno-card.wild .v { color: #fff; text-shadow: 0 0 6px #000, 0 2px 0 #000; }
+.uno-card.back { background: #17171c; color: var(--fire); border-color: var(--fire); opacity: 1; }
+.uno-card.back:not(:disabled) { cursor: pointer; }
+.uno-card.back:not(:disabled):hover { transform: translateY(-4px); }
+.uno-card.back .v { font-size: calc(var(--w) * .3); }
+.count-s { position: absolute; bottom: 6px; font-size: .8rem; color: var(--muted); }
+.discard-wrap { position: relative; }
+.discard-wrap .uno-card { opacity: 1; }
+.color-chip { position: absolute; right: -8px; bottom: -8px; width: 26px; height: 26px; border-radius: 50%; border: 3px solid #fff; }
+.color-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.color-btn { border: 3px solid #fff; border-radius: 12px; padding: 10px 14px; font-weight: 800; cursor: pointer; min-width: 78px; }
+.scores { margin: 0; padding-left: 1.2em; text-align: left; }
+.hand .uno-card { margin: 0 -2px; }

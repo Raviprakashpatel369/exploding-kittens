@@ -1,6 +1,6 @@
-# Exploding Kittens Online
+# Card Night: Exploding Kittens and Uno
 
-A small realtime web version of the Exploding Kittens base game (2–10 players, rules from the official rulebook).
+Small realtime web versions of **Exploding Kittens** (rules from the official rulebook) and **Uno** (official Mattel rules), 2–10 players each.
 React + Vite front end, Supabase (Postgres + Realtime) for shared game state, Vercel for hosting.
 
 ## 1. Supabase
@@ -40,7 +40,20 @@ Tune `GAME_WAIT`, `SHORT_WAIT`, `LOBBY_WAIT` at the top of `src/Game.jsx`.
 each player still gets 1 Defuse + 7 cards, 2 spare Defuses per deck go back into the pile, and there are always
 (players − 1) Exploding Kittens. Change `MAX_PLAYERS` / `decksFor` in `src/engine.js` to tune this.
 
-## Rules implemented
+## Uno
+Official rules: 108 cards, 7 each, match colour/number/symbol, Skip, Reverse (acts as Skip with 2 players), Draw Two
+(next player draws 2 and is skipped), Wild, and Wild Draw Four **with the challenge rule** (challenge: if the player held a card
+of the current colour they draw 4, otherwise you draw 6). Drawing: draw one card, play it if you can or keep it. Say UNO when you
+play your second-to-last card (tick "Say UNO with this play"); if you forget, anyone can press **Catch!** and you draw 2
+(you can still press **UNO!** first if you're quick). Rounds are scored (number cards face value, Skip/Reverse/Draw Two 20,
+Wild/Draw Four 50); first to 500 wins the match and the host can start the next round or a new match.
+Players who leave or disconnect have their cards shuffled back into the draw pile.
+
+## Adding another game
+Write an engine (`newLobby`, `reduce`, `blockerId`) and a Board component, register them in `src/games.js` and the `BOARDS` map in
+`src/Room.jsx`. Lobby, invite links, realtime sync and disconnect handling are shared automatically.
+
+## Rules implemented (Exploding Kittens)
 Exploding Kittens, Defuse (secret reinsert), Attack (with stacking), Skip, Favor, Shuffle, See the Future,
 Nope (any living player, any time, even out of turn; chainable; 7s window that restarts on each Nope and is timed locally by each player so device clocks do not matter), 5 Cat card types, two-of-a-kind (random steal) and
 three-of-a-kind (name a card), faster-game variant for small games, correct setup for 2–5 players.

@@ -20,7 +20,7 @@ export function shuffle(arr) {
 
 export function newLobby(hostId, hostName) {
   return {
-    phase: 'lobby', hostId, fast: false, winner: null,
+    game: 'ek', phase: 'lobby', hostId, fast: false, winner: null,
     players: [{ id: hostId, name: hostName, hand: [], alive: true }],
     log: [`${hostName} created the game.`],
   };

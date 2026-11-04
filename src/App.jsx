@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { configured, supabase } from './supabase.js';
-import { newLobby } from './engine.js';
-import Game from './Game.jsx';
+import { GAMES } from './games.js';
+import Room from './Room.jsx';
 
 const ME_KEY = 'ek_me';
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // no I/O to avoid confusion
@@ -33,7 +33,7 @@ export default function App() {
   if (!configured) {
     return (
       <main className="home">
-        <h1>Exploding Kittens</h1>
+        <h1>Card Night</h1>
         <p className="card-panel">Supabase isn't configured yet. Copy <code>.env.example</code> to <code>.env</code>,
           fill in your project URL and anon key, then restart <code>npm run dev</code>.</p>
       </main>
@@ -42,11 +42,11 @@ export default function App() {
 
   const needName = !me.name.trim();
 
-  async function create() {
+  async function create(gameId) {
     setBusy(true); setErr('');
     for (let i = 0; i < 5; i++) {
       const c = Array.from({ length: 4 }, () => CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]).join('');
-      const { error } = await supabase.from('games').insert({ code: c, state: newLobby(me.id, me.name.trim()), version: 0 });
+      const { error } = await supabase.from('games').insert({ code: c, state: GAMES[gameId].newLobby(me.id, me.name.trim()), version: 0 });
       if (!error) { location.hash = c; setBusy(false); return; }
       if (error.code !== '23505') { setErr(error.message); setBusy(false); return; } // 23505 = code taken, retry
     }
@@ -61,14 +61,14 @@ export default function App() {
   }
 
   if (code && !needName) {
-    return <Game code={code} me={me} onLeave={() => { location.hash = ''; }} />;
+    return <Room code={code} me={me} onLeave={() => { location.hash = ''; }} />;
   }
 
   return (
     <main className="home">
       <div className="logo" aria-hidden>💣</div>
-      <h1>Exploding Kittens</h1>
-      <p className="tagline">Play with friends anywhere. 2–10 players (6+ combine two decks), no one has to sit at the same table.</p>
+      <h1>Card Night</h1>
+      <p className="tagline">Exploding Kittens and Uno with friends anywhere. 2–10 players, no one has to sit at the same table.</p>
 
       <section className="card-panel">
         <label htmlFor="name">Your name</label>
@@ -79,7 +79,8 @@ export default function App() {
           <p className="hint">You're joining game <strong>{code}</strong>. Enter your name to continue.</p>
         ) : (
           <>
-            <button className="btn primary" disabled={needName || busy} onClick={create}>Create a game</button>
+            <button className="btn primary" disabled={needName || busy} onClick={() => create('ek')}>💣 New Exploding Kittens game</button>
+            <button className="btn primary" disabled={needName || busy} onClick={() => create('uno')}>🎴 New Uno game</button>
             <form onSubmit={join} className="row">
               <input aria-label="Game code" value={joinCode} maxLength={4} placeholder="Game code"
                 onChange={(e) => setJoinCode(e.target.value.toUpperCase())} />
