@@ -1,6 +1,6 @@
-# Card Night: Exploding Kittens, Uno and Cat in the Box
+# Card Night: Exploding Kittens, Uno, Cat in the Box and Flip 7
 
-Small realtime web versions of **Exploding Kittens** (2–10 players), **Uno** (2–10) and **Cat in the Box** (2–5), using the published rulebooks.
+Small realtime web versions of **Exploding Kittens** (2–10 players), **Uno** (2–10) **Cat in the Box** (2–5) and **Flip 7** (2–18), using the published rulebooks.
 React + Vite front end, Supabase (Postgres + Realtime) for shared game state, Vercel for hosting.
 
 ## 1. Supabase
@@ -60,6 +60,16 @@ Scoring: 1 per trick, plus a bonus equal to your largest orthogonally connected 
 prediction was exact (2 players: if you won 4 or fewer tricks). A game is as many rounds as players; the start player rotates.
 Row order on the board (Red, Blue, Yellow, Green) only affects which tokens count as adjacent; change `ROWS` in `src/cat/engine.js`
 if your physical board differs. A player leaving mid-round voids that round and it restarts with the remaining players.
+
+## Flip 7
+Rules from The Op Games rulebook (ed. 3.1) and official FAQ. 94 cards: number cards 0–12 (n copies of n, one 0), +2/+4/+6/+8/+10 and ×2
+modifiers, and 3 each of Freeze, Flip Three and Second Chance. Hit or Stay; a duplicate number busts you (0 points); 7 different numbers
+ends the round for everyone with +15. Freeze banks a player's points and takes them out. Flip Three: three cards one at a time, stopping
+on a bust or Flip 7; Freeze/Flip Three drawn during it are played afterwards. Second Chance cancels one duplicate (not a Freeze); a second
+copy goes to another active player (or is discarded). Score = numbers, ×2 on numbers only, then +N, then the 15 bonus. The deck is not
+reshuffled between rounds (only when it runs out); the dealer passes left. First to 200 at the end of a round wins; ties above 200 play on.
+Interpretations: a Second Chance you draw while holding none is kept automatically; the rulebook says 3+ players but 2 is allowed here;
+the "card counter" shows the unseen number cards (public information, since all other cards are face up).
 
 ## Adding another game
 Write an engine (`newLobby`, `reduce`, `blockerId`) and a Board component, register them in `src/games.js` and the `BOARDS` map in

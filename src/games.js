@@ -4,6 +4,7 @@
 import * as ek from './engine.js';
 import * as uno from './uno/engine.js';
 import * as cat from './cat/engine.js';
+import * as flip7 from './flip7/engine.js';
 
 export const GAMES = {
   ek: {
@@ -25,6 +26,12 @@ export const GAMES = {
     id: 'cat', title: 'Cat in the Box', emoji: '📦', max: cat.MAX_PLAYERS,
     newLobby: cat.newLobby, reduce: cat.reduce, blockerId: cat.blockerId,
     lobbyNote: (n) => `${n}/${cat.MAX_PLAYERS} players (2–5) · ${Math.max(n, 2)} rounds, everyone starts once`,
+    options: [],
+  },
+  flip7: {
+    id: 'flip7', title: 'Flip 7', emoji: '🔢', max: flip7.MAX_PLAYERS,
+    newLobby: flip7.newLobby, reduce: flip7.reduce, blockerId: flip7.blockerId,
+    lobbyNote: (n) => `${n}/${flip7.MAX_PLAYERS} players · first to ${flip7.TARGET} points (the rulebook says 3+ players, 2 also works)`,
     options: [],
   },
 };

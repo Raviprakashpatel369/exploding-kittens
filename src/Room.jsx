@@ -4,8 +4,9 @@ import { gameOf } from './games.js';
 import EkBoard from './EkBoard.jsx';
 import UnoBoard from './uno/UnoBoard.jsx';
 import CatBoard from './cat/CatBoard.jsx';
+import Flip7Board from './flip7/Flip7Board.jsx';
 
-const BOARDS = { ek: EkBoard, uno: UnoBoard, cat: CatBoard };
+const BOARDS = { ek: EkBoard, uno: UnoBoard, cat: CatBoard, flip7: Flip7Board };
 
 const GAME_WAIT = 60000;   // offline player we're waiting on is removed after 60s
 const SHORT_WAIT = 15000;  // ...or 15s if they were already gone for a while
