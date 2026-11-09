@@ -53,12 +53,12 @@ export default function EkBoard({ s, me, mine, act, dispatch, isOffline, kick })
   const selTypes = sel.map((i) => hand[i]);
   const same = selTypes.length > 0 && selTypes.every((t) => t === selTypes[0]);
   const nameOf = (id) => s.players.find((p) => p.id === id)?.name;
-  const canNope = pend && mine?.alive && hand.includes('nope');
+  const canNope = pend && mine?.alive && pend.top !== me.id && hand.includes('nope');
   const pct = pend ? Math.max(0, Math.min(100, ((winStart + NOPE_MS - now) / NOPE_MS) * 100)) : 0;
   const nopeCount = hand.filter((c) => c === 'nope').length;
 
   const onCard = (i) => {
-    if (pend) { if (hand[i] === 'nope' && mine?.alive) act({ type: 'nope' }); return; }
+    if (pend) { if (hand[i] === 'nope' && mine?.alive && pend.top !== me.id) act({ type: 'nope' }); return; }
     if (s.phase === 'favor') return setSel([i]);
     if (!myTurn) return;
     setSel((cur2) => {
@@ -139,8 +139,8 @@ export default function EkBoard({ s, me, mine, act, dispatch, isOffline, kick })
                 {' · '}{pend.nopes % 2 ? 'currently cancelled' : 'going through'}
               </p>
               {canNope && <button className="btn nope" onClick={() => act({ type: 'nope' })}>NOPE! ({nopeCount})</button>}
-              {!canNope && mine?.alive && <p className="hint">You have no Nope card.</p>}
-              <p className="hint">Anyone holding a Nope can play it now, even out of turn.</p>
+              {!canNope && mine?.alive && <p className="hint">{pend.top === me.id ? 'You played the last card, so only the other players can Nope it.' : 'You have no Nope card.'}</p>}
+              <p className="hint">Anyone except the player who played the last card can Nope it now, even out of turn.</p>
             </div>
           )}
 
@@ -192,7 +192,7 @@ export default function EkBoard({ s, me, mine, act, dispatch, isOffline, kick })
           <div className="hand">
             {hand.map((t, i) => (
               <Card key={`${t}-${i}`} type={t} selected={sel.includes(i)}
-                disabled={!(myTurn || (s.phase === 'favor' && s.favor.from === me.id) || (pend && t === 'nope' && mine.alive))}
+                disabled={!(myTurn || (s.phase === 'favor' && s.favor.from === me.id) || (pend && t === 'nope' && mine.alive && pend.top !== me.id))}
                 onClick={() => onCard(i)} />
             ))}
             {!hand.length && <p className="hint">{mine.alive ? 'No cards in hand.' : 'You exploded. Stay to watch the finish.'}</p>}

@@ -20,7 +20,7 @@ for (let g=0; g<500; g++){
     const cur=s.players[s.turnIdx]; const now=Date.now();
     const act = (a)=>{ const r=reduce(s,{...a,now}); if(r) s=r; return r; };
     if(s.pending){
-      if(Math.random()<0.3){ const o=s.players.find(p=>p.alive&&p.hand.includes('nope')); if(o){act({type:'nope',player:o.id});continue;} }
+      if(Math.random()<0.3){ const o=s.players.find(p=>p.alive&&p.id!==s.pending.top&&p.hand.includes('nope')); if(o){act({type:'nope',player:o.id});continue;} }
       act({type:'resolve',seq:s.pending.seq}); continue;
     }
     if(s.phase==='favor'){ const f=s.players.find(p=>p.id===s.favor.from); act({type:'favorGive',player:f.id,card:f.hand[0]}); continue;}
@@ -77,4 +77,9 @@ let threw=false; try{ reduce(n,{type:'nope',player:'b',now:0}); }catch(e){ threw
 // 5) dead players cannot Nope
 n=mk(); n.players[0].hand.push('skip'); n.players[2].hand.push('nope'); n.players[2].alive=false;
 n=reduce(n,{type:'play',player:'a',card:'skip',now:0}); threw=false; try{ reduce(n,{type:'nope',player:'c',now:0}); }catch(e){ threw=true; } must(threw,'dead player cannot Nope');
+// 6) you cannot Nope your own card (neither the original action nor your own Nope), but you can Nope someone else's Nope (Yup)
+n=mk(); n.players[0].hand.push('skip','nope'); n.players[1].hand.push('nope','nope');
+n=reduce(n,{type:'play',player:'a',card:'skip',now:0}); threw=false; try{ reduce(n,{type:'nope',player:'a',now:0}); }catch(e){ threw=true; } must(threw,'player cannot Nope their own played card');
+n=reduce(n,{type:'nope',player:'b',now:0}); threw=false; try{ reduce(n,{type:'nope',player:'b',now:0}); }catch(e){ threw=true; } must(threw,'player cannot Nope their own Nope');
+n=reduce(n,{type:'nope',player:'a',now:0}); must(n.pending.nopes===2 && n.pending.top==='a','original player may Nope the Nope (Yup)');
 console.log('nope rules ok');

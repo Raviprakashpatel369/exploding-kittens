@@ -225,7 +225,7 @@ export function reduce(state, a) {
       takeCards(me, [a.card]);
       s.discard.push(a.card); s.peek = null;
       s.pending = { by: me.id, kind: 'card', card: a.card, target: a.target || null,
-        nopes: 0, seq: 1, id: Math.random().toString(36).slice(2, 9) };
+        nopes: 0, seq: 1, top: me.id, id: Math.random().toString(36).slice(2, 9) };
       say(s, `${me.name} played ${CARDS[a.card].name}${a.target ? ` on ${byId(s, a.target).name}` : ''}.`);
       return s;
     }
@@ -239,7 +239,7 @@ export function reduce(state, a) {
       takeCards(me, Array(n).fill(a.card));
       s.discard.push(...Array(n).fill(a.card)); s.peek = null;
       s.pending = { by: me.id, kind: 'combo', card: a.card, count: n, target: t.id,
-        named: n === 3 ? a.named : null, nopes: 0, seq: 1, id: Math.random().toString(36).slice(2, 9) };
+        named: n === 3 ? a.named : null, nopes: 0, seq: 1, top: me.id, id: Math.random().toString(36).slice(2, 9) };
       say(s, `${me.name} played ${n} × ${CARDS[a.card].name} targeting ${t.name}.`);
       return s;
     }
@@ -247,9 +247,10 @@ export function reduce(state, a) {
     // ---------- Nope window ----------
     case 'nope': {
       if (!s.pending) throw new Error('Nothing to Nope right now.');
+      if (s.pending.top === me.id) throw new Error("You can't Nope your own card. Wait for someone else.");
       takeCards(me, ['nope']);
       s.discard.push('nope');
-      s.pending.nopes += 1; s.pending.seq += 1;
+      s.pending.nopes += 1; s.pending.seq += 1; s.pending.top = me.id;
       say(s, `🚫 ${me.name} played Nope!`);
       return s;
     }
